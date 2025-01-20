@@ -2328,7 +2328,10 @@ function get_calendar( $initial = true, $display = true ) {
 
 	/* translators: Calendar caption: 1: Month name, 2: 4-digit year. */
 	$calendar_caption = _x( '%1$s %2$s', 'calendar caption' );
-	$calendar_output  = '<table id="wp-calendar" class="wp-calendar-table">
+	// Apply a filter to allow customization of the table ID. Fallback to a unique ID if multiple calendars might be present.
+	$table_id = apply_filters( 'get_calendar_table_id', 'wp-calendar-' . wp_unique_id() );
+
+	$calendar_output  = '<table id="' . esc_attr( $table_id ) . '" class="wp-calendar-table">
 	<caption>' . sprintf(
 		$calendar_caption,
 		$wp_locale->get_month( $thismonth ),
@@ -2390,6 +2393,7 @@ function get_calendar( $initial = true, $display = true ) {
 		if ( current_time( 'j' ) == $day &&
 			current_time( 'm' ) == $thismonth &&
 			current_time( 'Y' ) == $thisyear ) {
+			$today_id = apply_filters( 'get_calendar_today_id', 'today-' . wp_unique_id() );
 			$calendar_output .= '<td id="today">';
 		} else {
 			$calendar_output .= '<td>';
